@@ -13,6 +13,11 @@
   "license": "ISC",
   "dependencies": {
     "babel": "^6.23.0",
+    "@babel/cli": "^7.18.10",
+    "@babel/core": "^7.18.10",
+    "@babel/node": "^7.18.10",
+    "@babel/preset-env": "^7.18.10",
+    "babel-cli": "^6.26.0",
     "bcrypt": "^5.0.1",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.20.0",
@@ -22,11 +27,6 @@
     "mongoose": "^6.5.0"
   },
   "devDependencies": {
-    "@babel/cli": "^7.18.10",
-    "@babel/core": "^7.18.10",
-    "@babel/node": "^7.18.10",
-    "@babel/preset-env": "^7.18.10",
-    "babel-cli": "^6.26.0",
     "cors": "^2.8.5",
     "morgan": "^1.10.0",
     "nodemon": "^2.0.19"
