@@ -2,10 +2,10 @@
 DESARROLLO
 
 Modulos:
-    npm i express mongoose
-    npm i nodemon morgan -D
+    npm i express mongoose bcrypt body-parser dotenv
+    npm i nodemon morgan cors -D
 
-    --- npm i express bcryptjs cors body-parser dotenv mongoose morgan helnet nodemon
+    --- npm i express bcrypt cors body-parser dotenv mongoose morgan nodemon
 
 Babel (es un transcompilador de javascript):
     Comando:

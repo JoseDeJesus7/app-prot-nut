@@ -1,10 +1,10 @@
 // Este archivo sirve para configurar la aplicacion de express
 
 import express from "express";
-import morgan from "morgan";
 import pkg from "../package.json"
 import config from "./config";
-import cors from "cors";
+//import cors from "cors";
+//import morgan from "morgan";
 import bodyParser from "body-parser"
 
 // Importamos rutas para un apartado en especifico
@@ -31,8 +31,8 @@ const app=express()
 const port=config.PORT;
 app.set("port", port)
 app.set('pkg', pkg)
-app.use(cors())
-app.use(morgan("dev"))
+//app.use(cors())
+//app.use(morgan("dev"))
 // Si se envia poca informacion 
 //app.use(express.json())
 // Si se envia mucha informacion
