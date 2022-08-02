@@ -1,0 +1,34 @@
+{
+    "username": "chuy7",
+    // Formato: YYYY-MM-DD
+    "birthday": "1999-05-07",
+    // En kg
+    "weight": 67,
+    // En cm
+    "height": 175,
+    /*
+        - F: Female
+        - M: Man
+    */
+    "gender": "M",
+    /*
+        - Bajar peso
+        - Mantenerme
+        - Ganar masa muscular
+    */
+    "objective": "Ganar masa muscular",
+    /*
+        - Leve
+        - Moderada
+        - Energetica
+    */
+    "physical_activity": "Moderada",
+    "diseases": [],
+    // Alimentos propios 
+    "registeded_foods": [],
+    /*
+    Ingredientes propios
+    Basados en los ingredientes generales pero modificados por el usuario
+    */
+    "registered_ingredients": []
+}
