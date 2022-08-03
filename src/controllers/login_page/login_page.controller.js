@@ -58,13 +58,13 @@ export const login=async (req, res) => {
         if(!newUser) return res.status(400).json({message: 'Hubo un problema al poblar los datos del usuario'})
         
         // Obtenemos los generos
-        const genders=await Gender.find();
+        const genders=await Gender.find({});
 
         // Obtenemos los objetivos
-        const objectives=await Objective.find();
+        const objectives=await Objective.find({});
 
         // Obtenemos las actividades fisicas
-        const physicalActivities=await PhysicalActivity.find();
+        const physicalActivities=await PhysicalActivity.find({});
 
         // Todos los alimentos
         const allFoods=await Food.find({});

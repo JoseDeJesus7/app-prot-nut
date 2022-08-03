@@ -1,7 +1,7 @@
 import User from "../../models/User"
 import Food from "../../models/Food";
 import Ingredient from "../../models/Ingredient";
-import mongoose from "mongoose";
+import mongoose, { mongo } from "mongoose";
 
 /* 
 mongoose.Types.ObjectId
@@ -75,11 +75,10 @@ export const saveUser=async (req, res) => {
         var result=await Ingredient.bulkWrite(bulkOps);
         if(!result) return res.status(400).json({message: 'Algo ha salido mal para las operaciones de ingredientes'})
         var newRegisteredIngredients=[]
-        var keys=Object.keys(result.insertedIds)
-        for(var i=0; i<keys.length; i++){ newRegisteredIngredients.push({ id_ingredient: result.insertedIds[keys[i]] }) }
-        newRegisteredIngredients=newRegisteredIngredients.concat( oldIngredients.map((e) => { return { id_ingredient: mongoose.Types.ObjectId(e.id_ingredient._id) } }) )
+        var regIng=await Ingredient.find({"username": user.username}, "_id name")
+        newRegisteredIngredients=regIng.map((e) => { return { id_ingredient: e._id } })
 
-        /// Operaciones alimentos
+        /// Operaciones alimentos (cuidado con los alimentos que tienen ingredientes nuevos)
         var registeredFoods=registered_foods.map((e) => JSON.parse(e))
         var namesFoodsIds=registeredFoods.map((e) => e.id_food._id)
         var listDeleteFoods=user.registered_foods.filter((e) => !namesFoodsIds.includes(e.id_food.toString()))
@@ -88,6 +87,21 @@ export const saveUser=async (req, res) => {
         })
         var oldFoods=registeredFoods.filter((e) => e.id_food._id!='')
         var newFoods=registeredFoods.filter((e) => e.id_food._id=='')
+        var oldFoodsSpecifications=[]
+        oldFoods.forEach((e) => {
+            oldFoodsSpecifications.push({
+                cost: e.id_food.specifications.cost,
+                duration: e.id_food.specifications.duration,
+                ingredients: e.id_food.specifications.ingredients.map((ing) => {
+                    var obj={
+                        total: ing.total,
+                        id_ingredient: ing.id_ingredient._id!='' ? mongoose.Types.ObjectId(ing.id_ingredient._id) : regIng.filter((ri) => ri.name==ing.id_ingredient.name)[0]._id
+                    }
+                    return obj
+                })
+            })
+        })
+        var index=0
         bulkOpsUpdate=oldFoods.map((e) => {
             return {
                 updateOne: {
@@ -97,12 +111,28 @@ export const saveUser=async (req, res) => {
                             picture: e.id_food.picture,
                             name: e.id_food.name,
                             description: e.id_food.description,
-                            specifications: e.id_food.specifications 
+                            specifications: oldFoodsSpecifications[index++]
+                            //specifications: e.id_food.specifications 
                         }
                     }
                 }
             }
         })
+        var newFoodsSpecifications=[]
+        newFoods.forEach((e) => {
+            newFoodsSpecifications.push({
+                cost: e.id_food.specifications.cost,
+                duration: e.id_food.specifications.duration,
+                ingredients: e.id_food.specifications.ingredients.map((ing) => {
+                    var obj={
+                        total: ing.total,
+                        id_ingredient: ing.id_ingredient._id!='' ? mongoose.Types.ObjectId(ing.id_ingredient._id) : regIng.filter((ri) => ri.name==ing.id_ingredient.name)[0]._id
+                    }
+                    return obj
+                })
+            })
+        })
+        index=0
         bulkOpsAdd=newFoods.map((e) => {
             return {
                 insertOne: {
@@ -111,7 +141,8 @@ export const saveUser=async (req, res) => {
                         picture: e.id_food.picture,
                         name: e.id_food.name,
                         description: e.id_food.description,
-                        specifications: e.id_food.specifications 
+                        specifications: newFoodsSpecifications[index++]
+                        //specifications: e.id_food.specifications 
                     }
                 } 
             }
@@ -120,9 +151,8 @@ export const saveUser=async (req, res) => {
         result=await Food.bulkWrite(bulkOps);
         if(!result) return res.status(400).json({message: 'Algo ha salido mal para las operaciones de alimentos'})
         var newRegisteredFoods=[]
-        var keys=Object.keys(result.insertedIds)
-        for(var i=0; i<keys.length; i++){ newRegisteredFoods.push({ id_food: result.insertedIds[keys[i]] }) }
-        newRegisteredFoods=newRegisteredFoods.concat( oldFoods.map((e) => { return { id_food: mongoose.Types.ObjectId(e.id_food._id) } }) )
+        var regFood=await Food.find({"username": user.username}, "_id")
+        newRegisteredFoods=regFood.map((e) => { return { id_food: e._id } })
 
         var cal=calendar.map((e) => JSON.parse(e))
         cal.forEach(e => {
@@ -151,7 +181,7 @@ export const saveUser=async (req, res) => {
                 'registered_foods': newRegisteredFoods,
                 'registered_ingredients': newRegisteredIngredients,
                 'calendar': cal,
-                'diets': JSON.parse(diets),
+                'diets': diets.map((e) => JSON.parse(e)),
                 'diets_date': dietsDate
                 //createdAt
                 //updatedAt
